@@ -1,2 +1,3 @@
-# paramPracticumDotnetTasks
-Repository For Anadolu’nun Yıldızları Param .Net Practicum Tasks 
+# Anadolu’nun Yıldızları Param .Net Practicum
+
+* Burası Param Dotnet Practicum için verilen ödevler reposudur.
