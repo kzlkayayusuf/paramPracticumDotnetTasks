@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -15,16 +16,18 @@ public class BookController : ControllerBase
 {
 
     private readonly BookStoreDbContext context;
+    private readonly IMapper mapper;
 
-    public BookController(BookStoreDbContext context)
+    public BookController(BookStoreDbContext context, IMapper mapper)
     {
         this.context = context;
+        this.mapper = mapper;
     }
 
     [HttpGet]
     public IActionResult GetBooks()
     {
-        GetBooksQuery query = new GetBooksQuery(context);
+        GetBooksQuery query = new GetBooksQuery(context, mapper);
         var result = query.Handle();
         return Ok(result);
     }
@@ -35,7 +38,7 @@ public class BookController : ControllerBase
         GetBookDetailQuery.BookDetailViewModel result;
         try
         {
-            GetBookDetailQuery query = new GetBookDetailQuery(context);
+            GetBookDetailQuery query = new GetBookDetailQuery(context, mapper);
             query.BookId = id;
             result = query.Handle();
         }
@@ -59,7 +62,7 @@ public class BookController : ControllerBase
     [HttpPost]
     public IActionResult AddBook([FromBody] CreateBookCommand.CreateBookModel newBook)
     {
-        CreateBookCommand command = new CreateBookCommand(context);
+        CreateBookCommand command = new CreateBookCommand(context, mapper);
         try
         {
             command.Model = newBook;

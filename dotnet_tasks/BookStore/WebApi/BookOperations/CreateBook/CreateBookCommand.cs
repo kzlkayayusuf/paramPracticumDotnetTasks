@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 
 namespace WebApi.BookOperations.CreateBook;
 
@@ -8,10 +9,12 @@ public class CreateBookCommand
 {
     public CreateBookModel Model { get; set; }
     private readonly BookStoreDbContext dbContext;
+    private readonly IMapper mapper;
 
-    public CreateBookCommand(BookStoreDbContext dbContext)
+    public CreateBookCommand(BookStoreDbContext dbContext, IMapper mapper)
     {
         this.dbContext = dbContext;
+        this.mapper = mapper;
     }
 
     public void Handle()
@@ -19,11 +22,12 @@ public class CreateBookCommand
         var newBook = dbContext.Books.SingleOrDefault(x => x.Title == Model.Title);
         if (newBook is not null)
             throw new InvalidOperationException("That Book already exists");
-        newBook = new Book();
-        newBook.Title = Model.Title;
-        newBook.PublishDate = Model.PublishDate;
-        newBook.PageCount = Model.PageCount;
-        newBook.GenreId = Model.GenreId;
+
+        newBook = mapper.Map<Book>(Model); //new Book();
+        //newBook.Title = Model.Title;
+        //newBook.PublishDate = Model.PublishDate;
+        //newBook.PageCount = Model.PageCount;
+        //newBook.GenreId = Model.GenreId;
 
         dbContext.Books.Add(newBook);
         dbContext.SaveChanges();

@@ -21,6 +21,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // for using automapper
+        builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
