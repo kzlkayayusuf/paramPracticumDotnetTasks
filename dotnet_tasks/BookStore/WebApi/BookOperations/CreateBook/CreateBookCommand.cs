@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebApi.BookOperations.CreateBooks;
+namespace WebApi.BookOperations.CreateBook;
 
-public class CreateBooksQuery
+public class CreateBookCommand
 {
-    public CreateBooksModel Model { get; set; }
+    public CreateBookModel Model { get; set; }
     private readonly BookStoreDbContext dbContext;
 
-    public CreateBooksQuery(BookStoreDbContext dbContext)
+    public CreateBookCommand(BookStoreDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
@@ -25,15 +25,17 @@ public class CreateBooksQuery
         newBook.PageCount = Model.PageCount;
         newBook.GenreId = Model.GenreId;
 
-        dbContext.Books.Add(entity: newBook);
+        dbContext.Books.Add(newBook);
         dbContext.SaveChanges();
     }
+
+    public class CreateBookModel
+    {
+        public string Title { get; set; }
+        public int GenreId { get; set; }
+        public int PageCount { get; set; }
+        public DateTime PublishDate { get; set; }
+    }
+
 }
 
-public class CreateBooksModel
-{
-    public string Title { get; set; }
-    public int GenreId { get; set; }
-    public int PageCount { get; set; }
-    public DateTime PublishDate { get; set; }
-}

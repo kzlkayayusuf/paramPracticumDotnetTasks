@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 namespace WebApi.BookOperations.GetBooks;
 
 public class GetBooksQuery
@@ -30,12 +27,13 @@ public class GetBooksQuery
         }
         return vm;
     }
+
+    public class BooksViewModel
+    {
+        public string Title { get; set; }
+        public string Genre { get; set; }
+        public int PageCount { get; set; }
+        public string PublishDate { get; set; }
+    }
 }
 
-public class BooksViewModel
-{
-    public string Title { get; set; }
-    public string Genre { get; set; }
-    public int PageCount { get; set; }
-    public string PublishDate { get; set; }
-}
