@@ -1,4 +1,6 @@
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -66,6 +68,17 @@ public class BookController : ControllerBase
         try
         {
             command.Model = newBook;
+
+            CreateBookCommandValidator validator = new CreateBookCommandValidator();
+            //ValidationResult result = validator.Validate(command);
+
+            validator.ValidateAndThrow(command);
+
+            // if (!result.IsValid)
+
+            //     foreach (var item in result.Errors)
+            //         System.Console.WriteLine("Property: " + item.PropertyName + " - Error Message: " + item.ErrorMessage);
+            // else
             command.Handle();
         }
         catch (Exception ex)
@@ -101,6 +114,8 @@ public class BookController : ControllerBase
         {
             DeleteBookCommand command = new DeleteBookCommand(context);
             command.BookId = id;
+            DeleteBookCommandValidator validator = new DeleteBookCommandValidator();
+            validator.ValidateAndThrow(command);
             command.Handle();
         }
         catch (Exception ex)
