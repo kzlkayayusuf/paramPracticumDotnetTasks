@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApi.Middlewares;
 
 namespace WebApi;
 
@@ -43,6 +44,7 @@ public class Program
 
         app.UseAuthorization();
 
+        app.UseCustomExceptionMiddleware();
 
         app.MapControllers();
 
