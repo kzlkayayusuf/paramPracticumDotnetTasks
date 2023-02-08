@@ -42,6 +42,8 @@ public class BookController : ControllerBase
         {
             GetBookDetailQuery query = new GetBookDetailQuery(context, mapper);
             query.BookId = id;
+            GetBookDetailQueryValidator validator = new GetBookDetailQueryValidator();
+            validator.ValidateAndThrow(query);
             result = query.Handle();
         }
         catch (Exception ex)
@@ -97,6 +99,8 @@ public class BookController : ControllerBase
             UpdateBookCommand command = new UpdateBookCommand(context);
             command.BookId = id;
             command.Model = updatedBook;
+            UpdateBookCommandValidator validator = new UpdateBookCommandValidator();
+            validator.ValidateAndThrow(command);
             command.Handle();
         }
         catch (Exception ex)
