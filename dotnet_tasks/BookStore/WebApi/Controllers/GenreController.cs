@@ -29,7 +29,7 @@ public class GenreController : ControllerBase
     {
         GetGenresQuery query = new(context, mapper);
         var obj = query.Handle();
-        return Ok();
+        return Ok(obj);
     }
 
     [HttpGet("{id}")]
@@ -61,6 +61,7 @@ public class GenreController : ControllerBase
     {
         UpdateGenreCommand command = new(context);
         command.GenreId = id;
+        command.Model = updatedGenre;
 
         UpdateGenreCommandValidator validator = new();
         validator.ValidateAndThrow(command);

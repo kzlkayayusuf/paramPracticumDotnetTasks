@@ -23,7 +23,7 @@ public class UpdateGenreCommand
         if (context.Genres.Any(x => x.Name.ToLower() == Model.Name.ToLower() && x.Id != GenreId))
             throw new InvalidOperationException("a book genre with the same name already exists");
 
-        genre.Name = Model.Name.Trim() == default ? Model.Name : genre.Name;
+        genre.Name = string.IsNullOrEmpty(Model.Name.Trim()) ? genre.Name : Model.Name;
         genre.IsActive = Model.IsActive;
         context.SaveChanges();
     }
