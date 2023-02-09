@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Middlewares;
+using WebApi.Services;
 
 namespace WebApi;
 
@@ -24,6 +25,10 @@ public class Program
 
         // for using automapper
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+        //dependecy injection : AddSingleton,AddScoped, AddTransient
+        builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
+        builder.Services.AddSingleton<ILoggerService, DbLogger>();
 
         var app = builder.Build();
 
