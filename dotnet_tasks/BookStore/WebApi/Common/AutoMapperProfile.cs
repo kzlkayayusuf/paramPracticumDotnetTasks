@@ -1,7 +1,7 @@
 using AutoMapper;
-using static WebApi.BookOperations.CreateBook.CreateBookCommand;
-using static WebApi.BookOperations.GetBookDetail.GetBookDetailQuery;
-using static WebApi.BookOperations.GetBooks.GetBooksQuery;
+using static WebApi.Application.BookOperations.Commands.CreateBook.CreateBookCommand;
+using static WebApi.Application.BookOperations.Queries.GetBookDetail.GetBookDetailQuery;
+using static WebApi.Application.BookOperations.Queries.GetBooks.GetBooksQuery;
 
 namespace WebApi.Common;
 

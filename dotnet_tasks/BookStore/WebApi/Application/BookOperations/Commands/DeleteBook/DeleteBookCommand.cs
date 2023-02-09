@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace WebApi.BookOperations.DeleteBook;
+namespace WebApi.Application.BookOperations.Commands.DeleteBook;
 
 public class DeleteBookCommand
 {

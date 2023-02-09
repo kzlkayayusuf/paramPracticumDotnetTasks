@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using AutoMapper;
 
-namespace WebApi.BookOperations.GetBookDetail;
+namespace WebApi.Application.BookOperations.Queries.GetBookDetail;
 
 public class GetBookDetailQuery
 {

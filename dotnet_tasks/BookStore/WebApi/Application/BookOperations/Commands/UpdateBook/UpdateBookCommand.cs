@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace WebApi.BookOperations.UpdateBook;
+namespace WebApi.Application.BookOperations.Commands.UpdateBook;
 
 public class UpdateBookCommand
 {
