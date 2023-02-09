@@ -1,5 +1,6 @@
 global using WebApi.DBOperations;
 global using WebApi.Common;
+global using WebApi.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
