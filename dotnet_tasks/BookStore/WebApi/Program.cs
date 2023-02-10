@@ -29,7 +29,8 @@ public class Program
 
         //dependecy injection : AddSingleton,AddScoped, AddTransient
         builder.Services.AddSingleton<ILoggerService, ConsoleLogger>();
-        builder.Services.AddSingleton<ILoggerService, DbLogger>();
+        //builder.Services.AddSingleton<ILoggerService, DbLogger>();
+        builder.Services.AddScoped<IBookStoreDbContext>(provider => provider.GetService<BookStoreDbContext>());
 
         var app = builder.Build();
 
