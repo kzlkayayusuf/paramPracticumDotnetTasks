@@ -19,8 +19,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Book, BooksViewModel>().ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.Name)); ;
         CreateMap<Entities.Genre, GenresViewModel>();
         CreateMap<Entities.Genre, GenreDetailViewModel>();
-        CreateMap<Author, AuthorsViewModel>();
-        CreateMap<Author, AuthorDetailViewModel>();
+        CreateMap<Author, AuthorsViewModel>().ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name + " " + src.Surname));
+        CreateMap<Author, AuthorDetailViewModel>().ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name + " " + src.Surname));
         CreateMap<CreateAuthorModel, Author>();
     }
 }

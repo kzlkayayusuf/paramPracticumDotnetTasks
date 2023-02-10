@@ -28,8 +28,7 @@ public class GetAuthorDetailQuery
 
     public class AuthorDetailViewModel
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string FullName { get; set; }
         public string Birthday { get; set; }
     }
 }
