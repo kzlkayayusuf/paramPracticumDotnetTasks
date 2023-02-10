@@ -1,4 +1,6 @@
 using AutoMapper;
+using static WebApi.Application.AuthorOperations.Queries.GetAuthorDetail.GetAuthorDetailQuery;
+using static WebApi.Application.AuthorOperations.Queries.GetAuthors.GetAuthorsQuery;
 using static WebApi.Application.BookOperations.Commands.CreateBook.CreateBookCommand;
 using static WebApi.Application.BookOperations.Queries.GetBookDetail.GetBookDetailQuery;
 using static WebApi.Application.BookOperations.Queries.GetBooks.GetBooksQuery;
@@ -16,5 +18,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Book, BooksViewModel>().ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.Name)); ;
         CreateMap<Entities.Genre, GenresViewModel>();
         CreateMap<Entities.Genre, GenreDetailViewModel>();
+        CreateMap<Author, AuthorsViewModel>();
+        CreateMap<Author, AuthorDetailViewModel>();
     }
 }
