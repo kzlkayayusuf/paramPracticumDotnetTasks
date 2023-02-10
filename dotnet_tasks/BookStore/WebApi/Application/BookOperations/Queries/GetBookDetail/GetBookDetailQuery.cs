@@ -20,7 +20,7 @@ public class GetBookDetailQuery
 
     public BookDetailViewModel Handle()
     {
-        var book = dbContext.Books.Include(x => x.Genre).Where(b => b.Id == BookId).SingleOrDefault();
+        var book = dbContext.Books.Include(x => x.Genre).Include(x => x.Author).Where(b => b.Id == BookId).SingleOrDefault();
         if (book is null)
             throw new InvalidOperationException("The Book Not Found");
         BookDetailViewModel vm = mapper.Map<BookDetailViewModel>(book); //new BookDetailViewModel();
@@ -35,6 +35,7 @@ public class GetBookDetailQuery
     {
         public string Title { get; set; }
         public string Genre { get; set; }
+        public string Author { get; set; }
         public int PageCount { get; set; }
         public string PublishDate { get; set; }
     }

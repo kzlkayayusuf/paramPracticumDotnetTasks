@@ -20,8 +20,8 @@ public class UpdateAuthorCommand
         if (author is null)
             throw new InvalidOperationException("No author found to be updated");
 
-        author.Name = Model.Name != default ? Model.Name : author.Name;
-        author.Surname = Model.Surname != default ? Model.Surname : author.Surname;
+        author.Name = string.IsNullOrEmpty(Model.Name.Trim()) ? author.Name : Model.Name;
+        author.Surname = string.IsNullOrEmpty(Model.Surname.Trim()) ? author.Surname : Model.Name;
         author.Birthday = Model.Birthday != default ? Model.Birthday : author.Birthday;
 
         context.SaveChanges();

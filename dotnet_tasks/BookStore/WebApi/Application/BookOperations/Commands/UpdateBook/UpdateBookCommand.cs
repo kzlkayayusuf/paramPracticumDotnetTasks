@@ -21,6 +21,7 @@ public class UpdateBookCommand
             throw new InvalidOperationException("No book found to be updated");
 
         book.GenreId = Model.GenreId != default ? Model.GenreId : book.GenreId;
+        book.AuthorId = Model.AuthorId != default ? Model.AuthorId : book.AuthorId;
         book.Title = Model.Title != default ? Model.Title : book.Title;
 
         dbContext.SaveChanges();
@@ -30,6 +31,7 @@ public class UpdateBookCommand
     {
         public string Title { get; set; }
         public int GenreId { get; set; }
+        public int AuthorId { get; set; }
     }
 }
 
