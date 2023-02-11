@@ -85,3 +85,9 @@ dotnet clean
 dotnet build
 dotnet test
 ```
+
+## Token Bazlı Kimlik Doğrulama
+
+```.NETCLI
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+```
