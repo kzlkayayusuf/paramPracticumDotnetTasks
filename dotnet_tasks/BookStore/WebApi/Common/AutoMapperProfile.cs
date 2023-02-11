@@ -7,6 +7,7 @@ using static WebApi.Application.BookOperations.Queries.GetBookDetail.GetBookDeta
 using static WebApi.Application.BookOperations.Queries.GetBooks.GetBooksQuery;
 using static WebApi.Application.GenreOperations.Queries.GetGenreDetail.GetGenreDetailQuery;
 using static WebApi.Application.GenreOperations.Queries.GetGenres.GetGenresQuery;
+using static WebApi.Application.UserOperations.Commands.CreateUser.CreateUserCommand;
 
 namespace WebApi.Common;
 
@@ -22,5 +23,6 @@ public class AutoMapperProfile : Profile
         CreateMap<Author, AuthorsViewModel>().ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name + " " + src.Surname));
         CreateMap<Author, AuthorDetailViewModel>().ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Name + " " + src.Surname));
         CreateMap<CreateAuthorModel, Author>();
+        CreateMap<CreateUserModel, User>();
     }
 }
