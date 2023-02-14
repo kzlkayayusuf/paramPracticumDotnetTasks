@@ -1,4 +1,4 @@
-namespace WebAPI.Models;
+namespace WebAPI.Common;
 
 public class ServiceResponse<TEntity>
 {
@@ -17,7 +17,7 @@ public class ServiceResponse<TEntity>
         Success = false;
     }
 
-    public TEntity? Data { get; set; }
+    public TEntity Data { get; set; }
     public bool Success { get; set; } = true;
     public string Error { get; set; } = string.Empty;
 }

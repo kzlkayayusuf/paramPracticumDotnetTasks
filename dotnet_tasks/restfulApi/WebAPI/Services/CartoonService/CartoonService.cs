@@ -1,197 +1,107 @@
+using System.Collections.Generic;
+using FluentValidation;
+using WebAPI.Application.CartoonOperations.Commands.CreateCartoon;
+using WebAPI.Application.CartoonOperations.Commands.DeleteCartoon;
+using WebAPI.Application.CartoonOperations.Commands.UpdateCartoon;
+using WebAPI.Application.CartoonOperations.Queries.GetCartoonByCharacters;
+using WebAPI.Application.CartoonOperations.Queries.GetCartoonByName;
+using WebAPI.Application.CartoonOperations.Queries.GetCartoonDetail;
+using WebAPI.Application.CartoonOperations.Queries.GetCartoons;
+using WebAPI.Application.CartoonOperations.Queries.GetCartoonsByGenre;
+using WebAPI.DBOperations;
+
 namespace WebAPI.Services.CartoonService;
 
 public class CartoonService : ICartoonService
 {
-
-    private static List<Cartoon> cartoons = new(){
-            new Cartoon(),
-            new Cartoon
-            {
-                ID = 2,
-                Name = "SpongeBob SquarePants",
-                Genre = Genre.Comedy,
-                ReleaseDate = new DateTime(1999, 5, 1),
-                Topic = "Underwater adventures",
-                Characters = new List<string> { "SpongeBob", "Patrick", "Sandy" }
-            },
-            new Cartoon
-            {
-                ID = 3,
-                Name = "The Simpsons",
-                Genre = Genre.Comedy,
-                ReleaseDate = new DateTime(1989, 12, 17),
-                Topic = "Family life in a suburban town",
-                Characters = new List<string> { "Homer", "Marge", "Bart", "Lisa", "Maggie" }
-            },
-            new Cartoon
-            {
-                ID = 4,
-                Name = "Teenage Mutant Ninja Turtles",
-                Genre = Genre.Action,
-                ReleaseDate = new DateTime(1987, 12, 10),
-                Topic = "Crime-fighting mutant turtles",
-                Characters = new List<string> { "Leonardo", "Michelangelo", "Donatello", "Raphael" }
-            },
-            new Cartoon
-            {
-                ID = 5,
-                Name = "Adventure Time",
-                Genre = Genre.Adventure,
-                ReleaseDate = new DateTime(2010, 4, 5),
-                Topic = "Surreal adventures in a post-apocalyptic world",
-                Characters = new List<string> { "Finn", "Jake", "Princess Bubblegum" }
-            }
-        };
+    private readonly ICartoonDbContext context;
     private readonly IMapper mapper;
 
-    public CartoonService(IMapper mapper)
+    public CartoonService(ICartoonDbContext context, IMapper mapper)
     {
+        this.context = context;
         this.mapper = mapper;
     }
 
-    public ServiceResponse<List<GetCartoonDto>> AddCartoon(AddCartoonDto newCartoon)
+    public ServiceResponse<GetCartoonDetailQuery.CartoonDetailViewModel> AddCartoon(CreateCartoonCommand.CreateCartoonModel newCartoon)
     {
-        var serviceResponse = new ServiceResponse<List<GetCartoonDto>>();
-        try
-        {
-            var cartoon = mapper.Map<Cartoon>(newCartoon);
-            cartoon.ID = cartoons.Max(c => c.ID) + 1;
-            cartoons.Add(cartoon);
-            serviceResponse.Data = cartoons.Select(c => mapper.Map<GetCartoonDto>(c)).ToList();
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
-        return serviceResponse;
+        CreateCartoonCommand command = new CreateCartoonCommand(context, mapper);
+        command.Model = newCartoon;
+
+        CreateCartoonCommandValidator validator = new();
+        validator.ValidateAndThrow(command);
+
+        return command.Handle();
     }
 
-    public ServiceResponse<GetCartoonDto> DeleteCartoon(int id)
+    public ServiceResponse<GetCartoonDetailQuery.CartoonDetailViewModel> DeleteCartoon(int id)
     {
-        var serviceResponse = new ServiceResponse<GetCartoonDto>();
-        try
-        {
-            var cartoon = cartoons.FirstOrDefault(c => c.ID == id);
-            if (cartoon is null)
-                throw new Exception($"Cartoon with Id '{id}' not found.");
+        DeleteCartoonCommand command = new DeleteCartoonCommand(context, mapper);
+        command.CartoonId = id;
+        DeleteCartoonCommandValidator validator = new();
+        validator.ValidateAndThrow(command);
 
-            cartoons.Remove(cartoon);
-
-            serviceResponse.Data = mapper.Map<GetCartoonDto>(cartoon);
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
-
-        return serviceResponse;
+        return command.Handle();
     }
 
-    public ServiceResponse<List<GetCartoonDto>> GetAllCartoons()
+    public ServiceResponse<List<GetCartoonsQuery.CartoonsViewModel>> GetAllCartoons()
     {
-        var serviceResponse = new ServiceResponse<List<GetCartoonDto>>();
-        serviceResponse.Data = cartoons.Select(c => mapper.Map<GetCartoonDto>(c)).ToList();
-        return serviceResponse;
+        GetCartoonsQuery query = new GetCartoonsQuery(context, mapper);
+
+
+        return query.Handle();
     }
 
-    public ServiceResponse<GetCartoonDto> GetCartoonById(int id)
+    public ServiceResponse<GetCartoonDetailQuery.CartoonDetailViewModel> GetCartoonById(int id)
     {
-        var serviceResponse = new ServiceResponse<GetCartoonDto>();
-        try
-        {
-            var cartoon = cartoons.Where(c => c.ID == id).FirstOrDefault();
-            if (cartoon is null)
-                throw new Exception($"Cartoon with Id '{id}' not found.");
-            serviceResponse.Data = mapper.Map<GetCartoonDto>(cartoon);
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
+        GetCartoonDetailQuery query = new GetCartoonDetailQuery(context, mapper);
+        query.CartoonId = id;
+        GetCartoonDetailQueryValidator validator = new();
+        validator.ValidateAndThrow(query);
 
-        return serviceResponse;
+        return query.Handle();
     }
 
-    public ServiceResponse<List<GetCartoonDto>> GetCartoonByName(string name)
+    public ServiceResponse<GetCartoonByNameQuery.GetCartoonByNameViewModel> GetCartoonByName(string name)
     {
-        var serviceResponse = new ServiceResponse<List<GetCartoonDto>>();
-        try
-        {
-            var cartoon = cartoons.Where(c => c.Name.ToUpper().Contains(name.ToUpper())).ToList();
-            if (cartoon is null)
-                throw new Exception($"Cartoon with name '{name}' not found.");
-            serviceResponse.Data = cartoon.Select(c => mapper.Map<GetCartoonDto>(c)).ToList();
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
+        GetCartoonByNameQuery query = new GetCartoonByNameQuery(context, mapper);
+        query.CartoonName = name;
+        GetCartoonByNameQueryValidator validator = new();
+        validator.ValidateAndThrow(query);
 
-        return serviceResponse;
+        return query.Handle();
     }
 
-    public ServiceResponse<List<GetCartoonDto>> GetCartoonsByCharacters(List<string> characters)
+    public ServiceResponse<List<GetCartoonByCharactersQuery.GetCartoonByCharactersViewModel>> GetCartoonByCharacters(List<string> characters)
     {
-        var serviceResponse = new ServiceResponse<List<GetCartoonDto>>();
-        try
-        {
-            var cartoon = cartoons.Where(c => c.Characters.Any(ch => characters.Contains(ch, StringComparer.OrdinalIgnoreCase)))
-                    .ToList();
-            if (cartoon is null)
-                throw new Exception($"Cartoon with characters '{characters.ToString()}' not found.");
-            serviceResponse.Data = cartoon.Select(c => mapper.Map<GetCartoonDto>(c)).ToList();
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
+        GetCartoonByCharactersQuery query = new GetCartoonByCharactersQuery(context, mapper);
+        query.CartoonCharacters = characters;
+        GetCartoonByCharactersQueryValidator validator = new();
+        validator.ValidateAndThrow(query);
 
-        return serviceResponse;
+        return query.Handle();
     }
 
-    public ServiceResponse<List<GetCartoonDto>> GetCartoonsByGenre(Genre genre)
-    {
-        var serviceResponse = new ServiceResponse<List<GetCartoonDto>>();
-        try
-        {
-            var cartoon = cartoons.Where(c => c.Genre.HasFlag(genre)).ToList();
-            if (cartoon is null)
-                throw new Exception($"Cartoon with genre '{genre}' not found.");
-            serviceResponse.Data = cartoon.Select(c => mapper.Map<GetCartoonDto>(c)).ToList();
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
 
-        return serviceResponse;
+    public ServiceResponse<List<GetCartoonsByGenreQuery.GetCartoonsByGenreViewModel>> GetCartoonsByGenre(Genre genre)
+    {
+        GetCartoonsByGenreQuery query = new GetCartoonsByGenreQuery(context, mapper);
+        query.CartoonGenre = genre;
+        GetCartoonsByGenreQueryValidator validator = new();
+        validator.ValidateAndThrow(query);
+
+        return query.Handle();
     }
 
-    public ServiceResponse<GetCartoonDto> UpdateCartoon(UpdateCartoonDto updatedCartoon)
+    public ServiceResponse<GetCartoonDetailQuery.CartoonDetailViewModel> UpdateCartoon(int id, UpdateCartoonCommand.UpdateCartoonModel cartoon)
     {
-        var serviceResponse = new ServiceResponse<GetCartoonDto>();
-        try
-        {
-            var cartoon = cartoons.FirstOrDefault(c => c.ID == updatedCartoon.ID);
-            if (cartoon is null)
-                throw new Exception($"Cartoon with Id '{updatedCartoon.ID}' not found.");
+        UpdateCartoonCommand command = new UpdateCartoonCommand(context, mapper);
+        command.CartoonId = id;
+        command.Model = cartoon;
 
-            mapper.Map(updatedCartoon, cartoon);
+        UpdateCartoonCommandValidator validator = new();
+        validator.ValidateAndThrow(command);
 
-            serviceResponse.Data = mapper.Map<GetCartoonDto>(cartoon);
-        }
-        catch (Exception ex)
-        {
-            serviceResponse.Success = false;
-            serviceResponse.Error = ex.Message;
-        }
-
-        return serviceResponse;
+        return command.Handle();
     }
 }

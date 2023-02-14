@@ -1,7 +1,12 @@
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Application.CartoonOperations.Commands.CreateCartoon;
+using WebAPI.Application.CartoonOperations.Commands.UpdateCartoon;
 
 namespace WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1.0/[controller]")]
 public class CartoonController : ControllerBase
@@ -13,90 +18,78 @@ public class CartoonController : ControllerBase
         this.cartoonService = cartoonService;
     }
 
-    [HttpGet("GetAll")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> Get()
+    [HttpGet]
+    public ActionResult Get()
     {
         var response = cartoonService.GetAllCartoons();
-        if (response.Data is null)
-            return BadRequest(response);
+
         return Ok(response);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> GetSingle(int id)
+    public ActionResult GetSingle(int id)
     {
         var response = cartoonService.GetCartoonById(id);
-        if (response.Data is null)
-            return NotFound(response);
+
         return Ok(response);
     }
 
     [HttpGet]
-    [Route("GetByName")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> GetByName([FromQuery] string name)
+    [Route("ListByName")]
+    public ActionResult GetByName([FromQuery] string name)
     {
         var response = cartoonService.GetCartoonByName(name);
-        if (response.Data is null)
-            return NotFound(response);
+
         return Ok(response);
     }
 
     [HttpGet]
-    [Route("GetByGenre")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> GetByGenre([FromQuery] Genre genre)
+    [Route("ListByGenre")]
+    public ActionResult GetByGenre([FromQuery] Genre genre)
     {
         var response = cartoonService.GetCartoonsByGenre(genre);
-        if (response.Data is null)
-            return NotFound(response);
+
         return Ok(response);
     }
 
     [HttpGet]
-    [Route("GetByCharacters")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> GetByCharacters([FromQuery] List<string> characters)
+    [Route("ListByCharacters")]
+    public ActionResult GetByCharacters([FromQuery] List<string> characters)
     {
-        var response = cartoonService.GetCartoonsByCharacters(characters);
-        if (response.Data is null)
-            return NotFound(response);
+        var response = cartoonService.GetCartoonByCharacters(characters);
+
         return Ok(response);
     }
 
     [HttpPost]
-    public ActionResult<ServiceResponse<List<GetCartoonDto>>> AddCartoon([FromBody] AddCartoonDto newCartoon)
+    public ActionResult AddCartoon([FromBody] CreateCartoonCommand.CreateCartoonModel newCartoon)
     {
         var response = cartoonService.AddCartoon(newCartoon);
-        if (response.Data is null)
-            return BadRequest(response);
-        return Created(Url.Action("GetSingle", new { id = response.Data[response.Data.Count - 1].ID })!, response);
+
+        return Created(Url.Action("GetSingle", new { id = response.Data.ID }), response);
         //Headers Location kısmında bu uriyi gösterir.
     }
 
-    [HttpPut]
-    public ActionResult<ServiceResponse<List<GetCartoonDto>>> UpdateCartoon([FromBody] UpdateCartoonDto updatedCartoon)
+    [HttpPut("{id}")]
+    public ActionResult UpdateCartoon(int id, [FromBody] UpdateCartoonCommand.UpdateCartoonModel updatedCartoon)
     {
-        var response = cartoonService.UpdateCartoon(updatedCartoon);
-        if (response.Data is null)
-            return NotFound(response);
+        var response = cartoonService.UpdateCartoon(id, updatedCartoon);
 
         return Ok(response);
     }
 
-    [HttpPatch]
-    public ActionResult<ServiceResponse<List<GetCartoonDto>>> UpdateCartoonPatch([FromBody] UpdateCartoonDto updatedCartoon)
+    [HttpPatch("{id}")]
+    public ActionResult UpdateCartoonPatch(int id, [FromBody] UpdateCartoonCommand.UpdateCartoonModel updatedCartoon)
     {
-        var response = cartoonService.UpdateCartoon(updatedCartoon);
-        if (response.Data is null)
-            return NotFound(response);
+        var response = cartoonService.UpdateCartoon(id, updatedCartoon);
 
         return Ok(response);
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<ServiceResponse<GetCartoonDto>> DeleteCartoon(int id)
+    public ActionResult DeleteCartoon(int id)
     {
         var response = cartoonService.DeleteCartoon(id);
-        if (response.Data is null)
-            return NotFound(response);
 
         return Ok(response);
     }

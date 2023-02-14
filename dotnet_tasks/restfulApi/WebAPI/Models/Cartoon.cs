@@ -1,12 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebAPI.Models;
 
 public class Cartoon
 {
-
-    public int ID { get; set; } = 1;
-    public string Name { get; set; } = "Tom and Jerry";
-    public Genre Genre { get; set; } = Genre.Comedy;
-    public DateTime ReleaseDate { get; set; } = new DateTime(1940, 2, 10);
-    public string Topic { get; set; } = "Slapstick comedy";
-    public List<string> Characters { get; set; } = new List<string> { "Tom", "Jerry" };
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+    public string Name { get; set; }
+    public Genre Genre { get; set; }
+    public DateTime ReleaseDate { get; set; }
+    public string Topic { get; set; }
+    public List<CartoonCharacter> Characters { get; set; }
 }
