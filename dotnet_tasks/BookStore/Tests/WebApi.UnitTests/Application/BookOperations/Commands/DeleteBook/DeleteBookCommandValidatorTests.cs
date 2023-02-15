@@ -1,9 +1,10 @@
 using FluentAssertions;
 using WebApi.Application.BookOperations.Commands.DeleteBook;
+using WebApi.UnitTests.TestsSetup;
 
 namespace WebApi.UnitTests.Application.BookOperations.Commands.DeleteBook;
 
-public class DeleteBookCommandValidatorTests
+public class DeleteBookCommandValidatorTests : IClassFixture<CommonTestFixture>
 {
     private DeleteBookCommandValidator _validator;
 
