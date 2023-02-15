@@ -115,3 +115,5 @@ dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
     * GetGenreDetailQueryValidator
 
 3. Daha ödevler kapsamında yazmış olduğunuz author servislerinin birim testlerini yazınız.
+
+![tests](Tests/pictures/tests.png)
