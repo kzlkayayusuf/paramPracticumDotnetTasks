@@ -10,11 +10,11 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// dependency injection
 // extension method ile dbContext
 builder.Services.ConfigureSqlContext(builder.Configuration);
-
-// dependency injection
 builder.Services.ConfigureRepositoryManager();
+builder.Services.ConfigureServiceManager();
 
 var app = builder.Build();
 
