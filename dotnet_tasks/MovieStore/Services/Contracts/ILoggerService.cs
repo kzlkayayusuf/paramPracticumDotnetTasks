@@ -1,6 +1,6 @@
 namespace Services.Contracts;
 
-public interface ILoggingService
+public interface ILoggerService
 {
     void LogInfo(string message);
     void LogWarning(string message);
