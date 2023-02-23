@@ -7,16 +7,15 @@ namespace Services;
 public class MovieManager : IMovieService
 {
     private readonly IRepositoryManager manager;
+    private readonly ILoggerService logger;
 
-    public MovieManager(IRepositoryManager manager)
+    public MovieManager(IRepositoryManager manager, ILoggerService logger)
     {
         this.manager = manager;
+        this.logger = logger;
     }
     public Movie CreateOneMovie(Movie movie)
     {
-        if (movie is null)
-            throw new ArgumentNullException(nameof(movie));
-
         manager.Movie.CreateOneMovie(movie);
         manager.Save();
 
@@ -28,7 +27,11 @@ public class MovieManager : IMovieService
         // check entity
         var entity = manager.Movie.GetOneMovieById(id, trackChanges);
         if (entity is null)
-            throw new Exception($"Movie with id:{id} could not found!");
+        {
+            string message = $"Movie with id:{id} could not found!";
+            logger.LogInfo(message);
+            throw new Exception(message);
+        }
 
         manager.Movie.DeleteOneMovie(entity);
         manager.Save();
@@ -49,11 +52,11 @@ public class MovieManager : IMovieService
         // check entity
         var entity = manager.Movie.GetOneMovieById(id, trackChanges);
         if (entity is null)
-            throw new Exception($"Movie with id:{id} could not found!");
-
-        // check params
-        if (movie is null)
-            throw new ArgumentNullException(nameof(movie));
+        {
+            string message = $"Movie with id:{id} could not found!";
+            logger.LogInfo(message);
+            throw new Exception(message);
+        }
 
         entity.Name = movie.Name;
         entity.Price = movie.Price;
