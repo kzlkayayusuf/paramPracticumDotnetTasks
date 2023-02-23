@@ -125,3 +125,9 @@ dotnet new webapi -n {projectName}
 dotnet new classlib -n {libName}
 dotnet new xunit -n {testName}
 ```
+
+### NLog ekleme
+
+```.NETCLI
+dotnet add package NLog.Extensions.Logging
+```
