@@ -90,3 +90,38 @@ Bu proje kapsamında bir Movie Store uygulamasının servislerinin yazılması b
 8. Projenin birim testleri eksiksiz şekilde yazılmalıdır. Tüm testler hatasız çalışmalıdır.
 
 9. Silme servislerinde veri tutarlılığı dikkate alınmalıdır. Diğer tablolarda ilişkili datası bulunan kayıtlar silinemez.
+
+### Dotnet Entity Framework
+
+```.NET CLI
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SQLServer
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet tool uninstall --global dotnet-ef
+dotnet tool install --global dotnet-ef
+dotnet ef
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+### Solution dosyasına projeleri eklemek içim
+
+```.NET CLI
+dotnet sln add {projectName}
+```
+
+### Projeleri birbirine referans olarak eklemek için
+
+```.NETCLI
+dotnet add reference {projectPath}
+```
+
+### Proje oluşturma komutları
+
+```.NETCLI
+dotnet new sln {solutionName}
+dotnet new webapi -n {projectName}
+dotnet new classlib -n {libName}
+dotnet new xunit -n {testName}
+```
