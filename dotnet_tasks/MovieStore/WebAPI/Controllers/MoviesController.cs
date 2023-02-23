@@ -1,7 +1,7 @@
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Contracts;
+using Services.Contracts;
 
 namespace WebAPI.Controllers;
 
@@ -9,9 +9,9 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class MoviesController : ControllerBase
 {
-    private readonly IRepositoryManager manager;
+    private readonly IServiceManager manager;
 
-    public MoviesController(IRepositoryManager manager)
+    public MoviesController(IServiceManager manager)
     {
         this.manager = manager;
     }
@@ -21,7 +21,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = manager.Movie.GetAllMovies(false);
+            var movies = manager.MovieService.GetAllMovies(false);
             return Ok(movies);
         }
         catch (Exception e)
@@ -35,7 +35,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = manager.Movie.GetOneMovieById(id, false);
+            var movie = manager.MovieService.GetOneMovieById(id, false);
             if (movie is null)
                 return NotFound();
 
@@ -55,8 +55,7 @@ public class MoviesController : ControllerBase
             if (movie is null)
                 return BadRequest();
 
-            manager.Movie.CreateOneMovie(movie);
-            manager.Save();
+            manager.MovieService.CreateOneMovie(movie);
 
             return StatusCode(201, movie);
         }
@@ -71,21 +70,12 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = manager.Movie.GetOneMovieById(id, true);
-
-            if (entity is null)
-                return NotFound();
-
-            if (id != movie.Id)
+            if (movie is null)
                 return BadRequest();
 
-            entity.Name = movie.Name;
-            entity.Genre = movie.Genre;
-            entity.ReleaseYear = movie.ReleaseYear;
-            entity.Price = movie.Price;
-            manager.Save();
+            manager.MovieService.UpdateOneMovie(id, movie, true);
 
-            return Ok(movie);
+            return NoContent(); //204
         }
         catch (Exception e)
         {
@@ -98,12 +88,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = manager.Movie.GetOneMovieById(id, false);
-            if (entity is null)
-                return NotFound(new { statusCode = 404, message = $"Movie with id:{id} could not found" });
-
-            manager.Movie.DeleteOneMovie(entity);
-            manager.Save();
+            manager.MovieService.DeleteOneMovie(id, false);
 
             return NoContent();
         }
@@ -119,14 +104,13 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = manager.Movie.GetOneMovieById(id, true);
+            var entity = manager.MovieService.GetOneMovieById(id, true);
 
             if (entity is null)
                 return NotFound();
 
             moviePatch.ApplyTo(entity);
-            manager.Movie.Update(entity);
-            manager.Save();
+            manager.MovieService.UpdateOneMovie(id, entity, true);
 
             return NoContent();
         }
