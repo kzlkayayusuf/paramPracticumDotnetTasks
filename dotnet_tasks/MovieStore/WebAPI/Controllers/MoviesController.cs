@@ -1,7 +1,7 @@
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.EFCore;
+using Repositories.Contracts;
 
 namespace WebAPI.Controllers;
 
@@ -9,11 +9,11 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class MoviesController : ControllerBase
 {
-    private readonly RepositoryContext context;
-    public MoviesController(RepositoryContext context)
-    {
-        this.context = context;
+    private readonly IRepositoryManager manager;
 
+    public MoviesController(IRepositoryManager manager)
+    {
+        this.manager = manager;
     }
 
     [HttpGet]
@@ -21,7 +21,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = context.Movies.ToList();
+            var movies = manager.Movie.GetAllMovies(false);
             return Ok(movies);
         }
         catch (Exception e)
@@ -35,7 +35,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = context.Movies.SingleOrDefault(m => m.Id.Equals(id));
+            var movie = manager.Movie.GetOneMovieById(id, false);
             if (movie is null)
                 return NotFound();
 
@@ -55,8 +55,8 @@ public class MoviesController : ControllerBase
             if (movie is null)
                 return BadRequest();
 
-            context.Movies.Add(movie);
-            context.SaveChanges();
+            manager.Movie.CreateOneMovie(movie);
+            manager.Save();
 
             return StatusCode(201, movie);
         }
@@ -71,7 +71,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = context.Movies.SingleOrDefault(m => m.Id.Equals(id));
+            var entity = manager.Movie.GetOneMovieById(id, true);
 
             if (entity is null)
                 return NotFound();
@@ -83,7 +83,7 @@ public class MoviesController : ControllerBase
             entity.Genre = movie.Genre;
             entity.ReleaseYear = movie.ReleaseYear;
             entity.Price = movie.Price;
-            context.SaveChanges();
+            manager.Save();
 
             return Ok(movie);
         }
@@ -98,12 +98,12 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = context.Movies.SingleOrDefault(m => m.Id.Equals(id));
+            var entity = manager.Movie.GetOneMovieById(id, false);
             if (entity is null)
                 return NotFound(new { statusCode = 404, message = $"Movie with id:{id} could not found" });
 
-            context.Movies.Remove(entity);
-            context.SaveChanges();
+            manager.Movie.DeleteOneMovie(entity);
+            manager.Save();
 
             return NoContent();
         }
@@ -119,13 +119,14 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var entity = context.Movies.SingleOrDefault(m => m.Id.Equals(id));
+            var entity = manager.Movie.GetOneMovieById(id, true);
 
             if (entity is null)
                 return NotFound();
 
             moviePatch.ApplyTo(entity);
-            context.SaveChanges();
+            manager.Movie.Update(entity);
+            manager.Save();
 
             return NoContent();
         }

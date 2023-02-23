@@ -13,6 +13,9 @@ builder.Services.AddSwaggerGen();
 // extension method ile dbContext
 builder.Services.ConfigureSqlContext(builder.Configuration);
 
+// dependency injection
+builder.Services.ConfigureRepositoryManager();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
