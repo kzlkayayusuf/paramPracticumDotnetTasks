@@ -1,4 +1,5 @@
 using Entities.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.EFCore;
 
@@ -102,6 +103,28 @@ public class MoviesController : ControllerBase
                 return NotFound(new { statusCode = 404, message = $"Movie with id:{id} could not found" });
 
             context.Movies.Remove(entity);
+            context.SaveChanges();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
+    [HttpPatch("{id:int}")]
+    public IActionResult PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
+            [FromBody] JsonPatchDocument<Movie> moviePatch)
+    {
+        try
+        {
+            var entity = context.Movies.SingleOrDefault(m => m.Id.Equals(id));
+
+            if (entity is null)
+                return NotFound();
+
+            moviePatch.ApplyTo(entity);
             context.SaveChanges();
 
             return NoContent();
