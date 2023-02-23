@@ -1,4 +1,5 @@
 using NLog;
+using Services.Contracts;
 using WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,10 @@ builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureLoggerService();
 
 var app = builder.Build();
+
+// using global exception middleware extension
+var logger = app.Services.GetRequiredService<ILoggerService>();
+app.ConfigureExceptionHandler(logger);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
