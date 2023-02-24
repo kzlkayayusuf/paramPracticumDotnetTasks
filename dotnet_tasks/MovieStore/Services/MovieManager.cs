@@ -38,9 +38,10 @@ public class MovieManager : IMovieService
         manager.Save();
     }
 
-    public IEnumerable<Movie> GetAllMovies(bool trackChanges)
+    public IEnumerable<MovieDto> GetAllMovies(bool trackChanges)
     {
-        return manager.Movie.GetAllMovies(trackChanges);
+        var movies = manager.Movie.GetAllMovies(trackChanges);
+        return mapper.Map<IEnumerable<MovieDto>>(movies);
     }
 
     public Movie GetOneMovieById(int id, bool trackChanges)
