@@ -33,12 +33,12 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateOneMovie([FromBody] Movie movie)
+    public IActionResult CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
     {
-        if (movie is null)
+        if (movieDto is null)
             return BadRequest();
 
-        manager.MovieService.CreateOneMovie(movie);
+        var movie = manager.MovieService.CreateOneMovie(movieDto);
 
         return StatusCode(201, movie);
     }
@@ -64,13 +64,20 @@ public class MoviesController : ControllerBase
 
     [HttpPatch("{id:int}")]
     public IActionResult PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
-            [FromBody] JsonPatchDocument<Movie> moviePatch)
+            [FromBody] JsonPatchDocument<MovieDto> moviePatch)
     {
-        var entity = manager.MovieService.GetOneMovieById(id, true);
+        var movieDto = manager.MovieService.GetOneMovieById(id, true);
 
-        moviePatch.ApplyTo(entity);
+        moviePatch.ApplyTo(movieDto);
         manager.MovieService.UpdateOneMovie(id,
-        new MovieDtoForUpdate(entity.Id, entity.Name, entity.ReleaseYear, entity.Genre, entity.Price),
+        new MovieDtoForUpdate()
+        {
+            Id = movieDto.Id,
+            Name = movieDto.Name,
+            Genre = movieDto.Genre,
+            Price = movieDto.Price,
+            ReleaseYear = movieDto.ReleaseYear,
+        },
          true);
 
         return NoContent();
