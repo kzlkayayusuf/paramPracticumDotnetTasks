@@ -70,21 +70,20 @@ public class MoviesController : ControllerBase
 
     [HttpPatch("{id:int}")]
     public IActionResult PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
-            [FromBody] JsonPatchDocument<MovieDto> moviePatch)
+            [FromBody] JsonPatchDocument<MovieDtoForUpdate> moviePatch)
     {
-        var movieDto = manager.MovieService.GetOneMovieById(id, true);
+        if (moviePatch is null)
+            return BadRequest(); //400
 
-        moviePatch.ApplyTo(movieDto);
-        manager.MovieService.UpdateOneMovie(id,
-        new MovieDtoForUpdate()
-        {
-            Id = movieDto.Id,
-            Name = movieDto.Name,
-            Genre = movieDto.Genre,
-            Price = movieDto.Price,
-            ReleaseYear = movieDto.ReleaseYear,
-        },
-         true);
+        var result = manager.MovieService.GetOneMovieForPatch(id, false);
+
+        moviePatch.ApplyTo(result.movieDtoForUpdate, ModelState);
+
+        TryValidateModel(result.movieDtoForUpdate);
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState); //422
+
+        manager.MovieService.SaveChangesForPatch(result.movieDtoForUpdate, result.movie);
 
         return NoContent();
     }

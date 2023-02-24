@@ -54,6 +54,23 @@ public class MovieManager : IMovieService
         return mapper.Map<MovieDto>(movie);
     }
 
+    public (MovieDtoForUpdate movieDtoForUpdate, Movie movie) GetOneMovieForPatch(int id, bool trackChanges)
+    {
+        var movie = manager.Movie.GetOneMovieById(id, trackChanges);
+        if (movie is null)
+            throw new MovieNotFoundException(id);
+
+        var movieDtoForUpdate = mapper.Map<MovieDtoForUpdate>(movie);
+
+        return (movieDtoForUpdate, movie);
+    }
+
+    public void SaveChangesForPatch(MovieDtoForUpdate movieDtoForUpdate, Movie movie)
+    {
+        mapper.Map(movieDtoForUpdate, movie);
+        manager.Save();
+    }
+
     public void UpdateOneMovie(int id, MovieDtoForUpdate movieDto, bool trackChanges)
     {
         // check entity

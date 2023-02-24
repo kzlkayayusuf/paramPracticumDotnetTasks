@@ -10,4 +10,6 @@ public interface IMovieService
     MovieDto CreateOneMovie(MovieDtoForInsertion movie);
     void UpdateOneMovie(int id, MovieDtoForUpdate movieDto, bool trackChanges);
     void DeleteOneMovie(int id, bool trackChanges);
+    (MovieDtoForUpdate movieDtoForUpdate, Movie movie) GetOneMovieForPatch(int id, bool trackChanges);
+    void SaveChangesForPatch(MovieDtoForUpdate movieDtoForUpdate, Movie movie);
 }

@@ -8,7 +8,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<MovieDtoForUpdate, Movie>();
+        CreateMap<MovieDtoForUpdate, Movie>().ReverseMap();
         CreateMap<Movie, MovieDto>();
         CreateMap<MovieDtoForInsertion, Movie>();
     }
