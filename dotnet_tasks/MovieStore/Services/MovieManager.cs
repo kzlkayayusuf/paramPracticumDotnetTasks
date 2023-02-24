@@ -1,3 +1,4 @@
+using Entities.Exceptions;
 using Entities.Models;
 using Repositories.Contracts;
 using Services.Contracts;
@@ -27,11 +28,7 @@ public class MovieManager : IMovieService
         // check entity
         var entity = manager.Movie.GetOneMovieById(id, trackChanges);
         if (entity is null)
-        {
-            string message = $"Movie with id:{id} could not found!";
-            logger.LogInfo(message);
-            throw new Exception(message);
-        }
+            throw new MovieNotFoundException(id);
 
         manager.Movie.DeleteOneMovie(entity);
         manager.Save();
@@ -44,7 +41,11 @@ public class MovieManager : IMovieService
 
     public Movie GetOneMovieById(int id, bool trackChanges)
     {
-        return manager.Movie.GetOneMovieById(id, trackChanges);
+        var movie = manager.Movie.GetOneMovieById(id, trackChanges);
+        if (movie is null)
+            throw new MovieNotFoundException(id);
+
+        return movie;
     }
 
     public void UpdateOneMovie(int id, Movie movie, bool trackChanges)
@@ -52,11 +53,7 @@ public class MovieManager : IMovieService
         // check entity
         var entity = manager.Movie.GetOneMovieById(id, trackChanges);
         if (entity is null)
-        {
-            string message = $"Movie with id:{id} could not found!";
-            logger.LogInfo(message);
-            throw new Exception(message);
-        }
+            throw new MovieNotFoundException(id);
 
         entity.Name = movie.Name;
         entity.Price = movie.Price;

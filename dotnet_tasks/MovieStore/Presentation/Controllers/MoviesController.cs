@@ -27,8 +27,6 @@ public class MoviesController : ControllerBase
     public IActionResult GetOneMovie([FromRoute(Name = "id")] int id)
     {
         var movie = manager.MovieService.GetOneMovieById(id, false);
-        if (movie is null)
-            return NotFound();
 
         return Ok(movie);
     }
@@ -68,9 +66,6 @@ public class MoviesController : ControllerBase
             [FromBody] JsonPatchDocument<Movie> moviePatch)
     {
         var entity = manager.MovieService.GetOneMovieById(id, true);
-
-        if (entity is null)
-            return NotFound();
 
         moviePatch.ApplyTo(entity);
         manager.MovieService.UpdateOneMovie(id, entity, true);
