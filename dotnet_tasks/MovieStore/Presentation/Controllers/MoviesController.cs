@@ -1,3 +1,4 @@
+using Entities.Dtos;
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -43,12 +44,12 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] Movie movie)
+    public IActionResult UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] MovieDtoForUpdate movieDto)
     {
-        if (movie is null)
+        if (movieDto is null)
             return BadRequest();
 
-        manager.MovieService.UpdateOneMovie(id, movie, true);
+        manager.MovieService.UpdateOneMovie(id, movieDto, true);
 
         return NoContent(); //204
     }
@@ -68,7 +69,9 @@ public class MoviesController : ControllerBase
         var entity = manager.MovieService.GetOneMovieById(id, true);
 
         moviePatch.ApplyTo(entity);
-        manager.MovieService.UpdateOneMovie(id, entity, true);
+        manager.MovieService.UpdateOneMovie(id,
+        new MovieDtoForUpdate(entity.Id, entity.Name, entity.ReleaseYear, entity.Genre, entity.Price),
+         true);
 
         return NoContent();
     }

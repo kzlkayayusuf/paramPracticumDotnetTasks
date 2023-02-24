@@ -1,3 +1,5 @@
+using AutoMapper;
+using Entities.Dtos;
 using Entities.Exceptions;
 using Entities.Models;
 using Repositories.Contracts;
@@ -9,9 +11,11 @@ public class MovieManager : IMovieService
 {
     private readonly IRepositoryManager manager;
     private readonly ILoggerService logger;
+    private readonly IMapper mapper;
 
-    public MovieManager(IRepositoryManager manager, ILoggerService logger)
+    public MovieManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper)
     {
+        this.mapper = mapper;
         this.manager = manager;
         this.logger = logger;
     }
@@ -48,17 +52,15 @@ public class MovieManager : IMovieService
         return movie;
     }
 
-    public void UpdateOneMovie(int id, Movie movie, bool trackChanges)
+    public void UpdateOneMovie(int id, MovieDtoForUpdate movieDto, bool trackChanges)
     {
         // check entity
         var entity = manager.Movie.GetOneMovieById(id, trackChanges);
         if (entity is null)
             throw new MovieNotFoundException(id);
 
-        entity.Name = movie.Name;
-        entity.Price = movie.Price;
-        entity.ReleaseYear = movie.ReleaseYear;
-        entity.Genre = movie.Genre;
+        mapper.Map<Movie>(movieDto);
+
         manager.Save();
 
     }
