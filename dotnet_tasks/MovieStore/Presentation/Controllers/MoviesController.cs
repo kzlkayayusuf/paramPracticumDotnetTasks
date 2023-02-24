@@ -38,6 +38,9 @@ public class MoviesController : ControllerBase
         if (movieDto is null)
             return BadRequest();
 
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState); //422
+
         var movie = manager.MovieService.CreateOneMovie(movieDto);
 
         return StatusCode(201, movie);
