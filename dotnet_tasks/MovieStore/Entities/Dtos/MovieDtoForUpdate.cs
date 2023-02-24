@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Entities.Models.Enums;
 
 namespace Entities.Dtos;
@@ -24,4 +25,10 @@ public record MovieDtoForUpdate
 }
 */
 
-public record MovieDtoForUpdate(int Id, String Name, int ReleaseYear, Genre Genre, decimal Price);
+//public record MovieDtoForUpdate(int Id, String Name, int ReleaseYear, Genre Genre, decimal Price);
+
+public record MovieDtoForUpdate : MovieDtoForManipulation
+{
+    [Required]
+    public int Id { get; init; }
+}
