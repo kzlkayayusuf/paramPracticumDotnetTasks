@@ -52,7 +52,10 @@ public class MoviesController : ControllerBase
         if (movieDto is null)
             return BadRequest();
 
-        manager.MovieService.UpdateOneMovie(id, movieDto, true);
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState); //422
+
+        manager.MovieService.UpdateOneMovie(id, movieDto, false);
 
         return NoContent(); //204
     }
