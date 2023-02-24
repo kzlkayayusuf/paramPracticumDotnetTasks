@@ -10,5 +10,6 @@ public class MappingProfile : Profile
     {
         CreateMap<MovieDtoForUpdate, Movie>();
         CreateMap<Movie, MovieDto>();
+        CreateMap<MovieDtoForInsertion, Movie>();
     }
 }

@@ -19,12 +19,13 @@ public class MovieManager : IMovieService
         this.manager = manager;
         this.logger = logger;
     }
-    public Movie CreateOneMovie(Movie movie)
+    public MovieDto CreateOneMovie(MovieDtoForInsertion movie)
     {
-        manager.Movie.CreateOneMovie(movie);
+        var entity = mapper.Map<Movie>(movie);
+        manager.Movie.CreateOneMovie(entity);
         manager.Save();
 
-        return movie;
+        return mapper.Map<MovieDto>(entity);
     }
 
     public void DeleteOneMovie(int id, bool trackChanges)
@@ -44,13 +45,13 @@ public class MovieManager : IMovieService
         return mapper.Map<IEnumerable<MovieDto>>(movies);
     }
 
-    public Movie GetOneMovieById(int id, bool trackChanges)
+    public MovieDto GetOneMovieById(int id, bool trackChanges)
     {
         var movie = manager.Movie.GetOneMovieById(id, trackChanges);
         if (movie is null)
             throw new MovieNotFoundException(id);
 
-        return movie;
+        return mapper.Map<MovieDto>(movie);
     }
 
     public void UpdateOneMovie(int id, MovieDtoForUpdate movieDto, bool trackChanges)
