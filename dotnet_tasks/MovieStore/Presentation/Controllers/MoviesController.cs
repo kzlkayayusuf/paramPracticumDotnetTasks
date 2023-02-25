@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Entities.Dtos;
 using Entities.Models;
 using Entities.RequestFeatures;
@@ -23,8 +24,11 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
-        var movies = await manager.MovieService.GetAllMoviesAsync(movieParameters, false);
-        return Ok(movies);
+        var pagedResult = await manager.MovieService.GetAllMoviesAsync(movieParameters, false);
+
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+
+        return Ok(pagedResult.movies);
     }
 
     [HttpGet("{id:int}")]
