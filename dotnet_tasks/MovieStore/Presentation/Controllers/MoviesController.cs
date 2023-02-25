@@ -2,6 +2,7 @@ using Entities.Dtos;
 using Entities.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.ActionFilters;
 using Services.Contracts;
 
 namespace Presentation.Controllers;
@@ -32,29 +33,19 @@ public class MoviesController : ControllerBase
         return Ok(movie);
     }
 
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     [HttpPost]
     public async Task<IActionResult> CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
     {
-        if (movieDto is null)
-            return BadRequest();
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState); //422
-
         var movie = await manager.MovieService.CreateOneMovieAsync(movieDto);
 
         return StatusCode(201, movie);
     }
 
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] MovieDtoForUpdate movieDto)
     {
-        if (movieDto is null)
-            return BadRequest();
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState); //422
-
         await manager.MovieService.UpdateOneMovieAsync(id, movieDto, false);
 
         return NoContent(); //204
