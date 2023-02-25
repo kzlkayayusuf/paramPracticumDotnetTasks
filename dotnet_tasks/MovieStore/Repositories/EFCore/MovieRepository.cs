@@ -11,12 +11,14 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
     }
 
-    public async Task<IEnumerable<Movie>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges) =>
-        await FindAll(trackChanges)
+    public async Task<PagedList<Movie>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
+    {
+        var movies = await FindAll(trackChanges)
         .OrderBy(m => m.Id)
-        .Skip((movieParameters.PageNumber - 1) * (movieParameters.PageSize))
-        .Take(movieParameters.PageSize)
         .ToListAsync();
+
+        return PagedList<Movie>.ToPagedList(movies, movieParameters.PageNumber, movieParameters.PageSize);
+    }
 
     public async Task<Movie> GetOneMovieByIdAsync(int id, bool trackChanges) =>
         await FindByCondition(m => m.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
