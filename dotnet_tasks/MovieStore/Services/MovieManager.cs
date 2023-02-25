@@ -32,9 +32,7 @@ public class MovieManager : IMovieService
     public async Task DeleteOneMovieAsync(int id, bool trackChanges)
     {
         // check entity
-        var entity = await manager.Movie.GetOneMovieByIdAsync(id, trackChanges);
-        if (entity is null)
-            throw new MovieNotFoundException(id);
+        var entity = await GetOneMovieByIdAndCheckExists(id, trackChanges);
 
         manager.Movie.DeleteOneMovie(entity);
         await manager.SaveAsync();
@@ -48,18 +46,14 @@ public class MovieManager : IMovieService
 
     public async Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges)
     {
-        var movie = await manager.Movie.GetOneMovieByIdAsync(id, trackChanges);
-        if (movie is null)
-            throw new MovieNotFoundException(id);
+        var movie = await GetOneMovieByIdAndCheckExists(id, trackChanges);
 
         return mapper.Map<MovieDto>(movie);
     }
 
     public async Task<(MovieDtoForUpdate movieDtoForUpdate, Movie movie)> GetOneMovieForPatchAsync(int id, bool trackChanges)
     {
-        var movie = await manager.Movie.GetOneMovieByIdAsync(id, trackChanges);
-        if (movie is null)
-            throw new MovieNotFoundException(id);
+        var movie = await GetOneMovieByIdAndCheckExists(id, trackChanges);
 
         var movieDtoForUpdate = mapper.Map<MovieDtoForUpdate>(movie);
 
@@ -75,13 +69,21 @@ public class MovieManager : IMovieService
     public async Task UpdateOneMovieAsync(int id, MovieDtoForUpdate movieDto, bool trackChanges)
     {
         // check entity
-        var entity = await manager.Movie.GetOneMovieByIdAsync(id, trackChanges);
-        if (entity is null)
-            throw new MovieNotFoundException(id);
+        var entity = await GetOneMovieByIdAndCheckExists(id, trackChanges);
 
         mapper.Map<Movie>(movieDto);
 
         await manager.SaveAsync();
 
+    }
+
+    private async Task<Movie> GetOneMovieByIdAndCheckExists(int id, bool trackChanges)
+    {
+        // check entity
+        var entity = await manager.Movie.GetOneMovieByIdAsync(id, trackChanges);
+        if (entity is null)
+            throw new MovieNotFoundException(id);
+
+        return entity;
     }
 }
