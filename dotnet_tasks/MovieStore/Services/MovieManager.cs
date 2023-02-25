@@ -2,6 +2,7 @@ using AutoMapper;
 using Entities.Dtos;
 using Entities.Exceptions;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Repositories.Contracts;
 using Services.Contracts;
 
@@ -38,9 +39,9 @@ public class MovieManager : IMovieService
         await manager.SaveAsync();
     }
 
-    public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync(bool trackChanges)
+    public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
-        var movies = await manager.Movie.GetAllMoviesAsync(trackChanges);
+        var movies = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
         return mapper.Map<IEnumerable<MovieDto>>(movies);
     }
 
