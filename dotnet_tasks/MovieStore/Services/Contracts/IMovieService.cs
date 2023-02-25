@@ -5,11 +5,11 @@ namespace Services.Contracts;
 
 public interface IMovieService
 {
-    IEnumerable<MovieDto> GetAllMovies(bool trackChanges);
-    MovieDto GetOneMovieById(int id, bool trackChanges);
-    MovieDto CreateOneMovie(MovieDtoForInsertion movie);
-    void UpdateOneMovie(int id, MovieDtoForUpdate movieDto, bool trackChanges);
-    void DeleteOneMovie(int id, bool trackChanges);
-    (MovieDtoForUpdate movieDtoForUpdate, Movie movie) GetOneMovieForPatch(int id, bool trackChanges);
-    void SaveChangesForPatch(MovieDtoForUpdate movieDtoForUpdate, Movie movie);
+    Task<IEnumerable<MovieDto>> GetAllMoviesAsync(bool trackChanges);
+    Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges);
+    Task<MovieDto> CreateOneMovieAsync(MovieDtoForInsertion movie);
+    Task UpdateOneMovieAsync(int id, MovieDtoForUpdate movieDto, bool trackChanges);
+    Task DeleteOneMovieAsync(int id, bool trackChanges);
+    Task<(MovieDtoForUpdate movieDtoForUpdate, Movie movie)> GetOneMovieForPatchAsync(int id, bool trackChanges);
+    Task SaveChangesForPatchAsync(MovieDtoForUpdate movieDtoForUpdate, Movie movie);
 }
