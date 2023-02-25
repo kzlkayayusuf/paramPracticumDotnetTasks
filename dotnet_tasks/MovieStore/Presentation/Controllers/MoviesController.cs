@@ -18,22 +18,22 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAllMovies()
+    public async Task<IActionResult> GetAllMovies()
     {
-        var movies = manager.MovieService.GetAllMovies(false);
+        var movies = await manager.MovieService.GetAllMoviesAsync(false);
         return Ok(movies);
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetOneMovie([FromRoute(Name = "id")] int id)
+    public async Task<IActionResult> GetOneMovie([FromRoute(Name = "id")] int id)
     {
-        var movie = manager.MovieService.GetOneMovieById(id, false);
+        var movie = await manager.MovieService.GetOneMovieByIdAsync(id, false);
 
         return Ok(movie);
     }
 
     [HttpPost]
-    public IActionResult CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
+    public async Task<IActionResult> CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
     {
         if (movieDto is null)
             return BadRequest();
@@ -41,13 +41,13 @@ public class MoviesController : ControllerBase
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState); //422
 
-        var movie = manager.MovieService.CreateOneMovie(movieDto);
+        var movie = await manager.MovieService.CreateOneMovieAsync(movieDto);
 
         return StatusCode(201, movie);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] MovieDtoForUpdate movieDto)
+    public async Task<IActionResult> UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] MovieDtoForUpdate movieDto)
     {
         if (movieDto is null)
             return BadRequest();
@@ -55,27 +55,27 @@ public class MoviesController : ControllerBase
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState); //422
 
-        manager.MovieService.UpdateOneMovie(id, movieDto, false);
+        await manager.MovieService.UpdateOneMovieAsync(id, movieDto, false);
 
         return NoContent(); //204
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult DeleteOneMovie([FromRoute(Name = "id")] int id)
+    public async Task<IActionResult> DeleteOneMovie([FromRoute(Name = "id")] int id)
     {
-        manager.MovieService.DeleteOneMovie(id, false);
+        await manager.MovieService.DeleteOneMovieAsync(id, false);
 
         return NoContent();
     }
 
     [HttpPatch("{id:int}")]
-    public IActionResult PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
+    public async Task<IActionResult> PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
             [FromBody] JsonPatchDocument<MovieDtoForUpdate> moviePatch)
     {
         if (moviePatch is null)
             return BadRequest(); //400
 
-        var result = manager.MovieService.GetOneMovieForPatch(id, false);
+        var result = await manager.MovieService.GetOneMovieForPatchAsync(id, false);
 
         moviePatch.ApplyTo(result.movieDtoForUpdate, ModelState);
 
@@ -83,7 +83,7 @@ public class MoviesController : ControllerBase
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState); //422
 
-        manager.MovieService.SaveChangesForPatch(result.movieDtoForUpdate, result.movie);
+        await manager.MovieService.SaveChangesForPatchAsync(result.movieDtoForUpdate, result.movie);
 
         return NoContent();
     }
