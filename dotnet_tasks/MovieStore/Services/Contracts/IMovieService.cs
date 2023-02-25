@@ -6,7 +6,7 @@ namespace Services.Contracts;
 
 public interface IMovieService
 {
-    Task<IEnumerable<MovieDto>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges);
+    Task<(IEnumerable<MovieDto> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges);
     Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges);
     Task<MovieDto> CreateOneMovieAsync(MovieDtoForInsertion movie);
     Task UpdateOneMovieAsync(int id, MovieDtoForUpdate movieDto, bool trackChanges);

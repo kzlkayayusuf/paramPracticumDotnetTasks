@@ -39,10 +39,12 @@ public class MovieManager : IMovieService
         await manager.SaveAsync();
     }
 
-    public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
+    public async Task<(IEnumerable<MovieDto> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
-        var movies = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
-        return mapper.Map<IEnumerable<MovieDto>>(movies);
+        var moviesWithMetaData = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
+        var moviesDto = mapper.Map<IEnumerable<MovieDto>>(moviesWithMetaData);
+
+        return (moviesDto, moviesWithMetaData.MetaData);
     }
 
     public async Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges)
