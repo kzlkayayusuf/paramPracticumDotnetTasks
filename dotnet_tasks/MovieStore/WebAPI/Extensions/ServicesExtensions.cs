@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Presentation.ActionFilters;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -20,4 +21,12 @@ public static class ServicesExtensions
 
     public static void ConfigureLoggerService(this IServiceCollection services) =>
         services.AddSingleton<ILoggerService, LoggerService>();
+
+    public static void ConfigureActionFilters(this IServiceCollection services)
+    {
+        // ActionFilters IoC kaydı
+        services.AddScoped<ValidationFilterAttribute>();
+
+        services.AddSingleton<LogFilterAttribute>();
+    }
 }
