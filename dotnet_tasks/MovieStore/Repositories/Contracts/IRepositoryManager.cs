@@ -4,5 +4,5 @@ namespace Repositories.Contracts;
 public interface IRepositoryManager
 {
     IMovieRepository Movie { get; }
-    void Save();
+    Task SaveAsync();
 }

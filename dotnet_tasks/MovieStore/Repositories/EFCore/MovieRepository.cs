@@ -1,4 +1,5 @@
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
 
 namespace Repositories.EFCore;
@@ -9,10 +10,10 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
     }
 
-    public IQueryable<Movie> GetAllMovies(bool trackChanges) => FindAll(trackChanges).OrderBy(m => m.Id);
+    public async Task<IEnumerable<Movie>> GetAllMoviesAsync(bool trackChanges) => await FindAll(trackChanges).OrderBy(m => m.Id).ToListAsync();
 
-    public Movie GetOneMovieById(int id, bool trackChanges) =>
-        FindByCondition(m => m.Id.Equals(id), trackChanges).SingleOrDefault();
+    public async Task<Movie> GetOneMovieByIdAsync(int id, bool trackChanges) =>
+        await FindByCondition(m => m.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
     public void CreateOneMovie(Movie movie) => Create(movie);
 

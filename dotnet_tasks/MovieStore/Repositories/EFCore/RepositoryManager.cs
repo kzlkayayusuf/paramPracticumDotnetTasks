@@ -18,8 +18,8 @@ public class RepositoryManager : IRepositoryManager
     // public IMovieRepository Movie => new MovieRepository(context);
     // yukarıdaki gibi her seferinde newlemek yerine lazy ile nesne istenildiğinde newlenir.
     public IMovieRepository Movie => movieRepository.Value;
-    public void Save()
+    public async Task SaveAsync()
     {
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 }
