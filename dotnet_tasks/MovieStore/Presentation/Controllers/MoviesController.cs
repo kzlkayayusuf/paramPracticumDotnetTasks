@@ -1,5 +1,6 @@
 using Entities.Dtos;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
@@ -20,9 +21,9 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllMovies()
+    public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
-        var movies = await manager.MovieService.GetAllMoviesAsync(false);
+        var movies = await manager.MovieService.GetAllMoviesAsync(movieParameters, false);
         return Ok(movies);
     }
 
