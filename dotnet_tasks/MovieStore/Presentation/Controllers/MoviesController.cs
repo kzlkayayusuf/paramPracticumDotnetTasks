@@ -25,11 +25,17 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
-        var pagedResult = await manager.MovieService.GetAllMoviesAsync(movieParameters, false);
+        var linkParameters = new LinkParameters()
+        {
+            MovieParameters = movieParameters,
+            HttpContext = HttpContext
+        };
 
-        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        var result = await manager.MovieService.GetAllMoviesAsync(linkParameters, false);
 
-        return Ok(pagedResult.movies);
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+        return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
     [HttpGet("{id:int}")]
