@@ -21,6 +21,7 @@ public class MoviesController : ControllerBase
         this.manager = manager;
     }
 
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     [HttpGet]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
