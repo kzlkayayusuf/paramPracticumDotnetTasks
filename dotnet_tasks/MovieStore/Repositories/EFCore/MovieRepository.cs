@@ -13,7 +13,9 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
 
     public async Task<PagedList<Movie>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
-        var movies = await FindAll(trackChanges)
+        var movies = await FindByCondition(m =>
+        ((m.Price >= movieParameters.MinPrice) && (m.Price <= movieParameters.MaxPrice))
+        , trackChanges)
         .OrderBy(m => m.Id)
         .ToListAsync();
 

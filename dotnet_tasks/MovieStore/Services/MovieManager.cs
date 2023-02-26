@@ -41,6 +41,9 @@ public class MovieManager : IMovieService
 
     public async Task<(IEnumerable<MovieDto> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
+        if (!movieParameters.ValidPriceRange)
+            throw new PriceOutOfRangeBadRequestException();
+
         var moviesWithMetaData = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
         var moviesDto = mapper.Map<IEnumerable<MovieDto>>(moviesWithMetaData);
 
