@@ -2,6 +2,7 @@ using System.Dynamic;
 using AutoMapper;
 using Entities.Dtos;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Repositories.Contracts;
@@ -14,12 +15,12 @@ public class MovieManager : IMovieService
     private readonly IRepositoryManager manager;
     private readonly ILoggerService logger;
     private readonly IMapper mapper;
-    private readonly IDataShaper<MovieDto> shaper;
+    private readonly IMovieLinks movieLinks;
 
-    public MovieManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper, IDataShaper<MovieDto> shaper)
+    public MovieManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper, IMovieLinks movieLinks)
     {
-        this.shaper = shaper;
         this.mapper = mapper;
+        this.movieLinks = movieLinks;
         this.manager = manager;
         this.logger = logger;
     }
@@ -42,16 +43,16 @@ public class MovieManager : IMovieService
         await manager.SaveAsync();
     }
 
-    public async Task<(IEnumerable<ExpandoObject> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
+    public async Task<(LinkResponse linkResponse, MetaData metaData)> GetAllMoviesAsync(LinkParameters linkParameters, bool trackChanges)
     {
-        if (!movieParameters.ValidPriceRange)
+        if (!linkParameters.MovieParameters.ValidPriceRange)
             throw new PriceOutOfRangeBadRequestException();
 
-        var moviesWithMetaData = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
+        var moviesWithMetaData = await manager.Movie.GetAllMoviesAsync(linkParameters.MovieParameters, trackChanges);
         var moviesDto = mapper.Map<IEnumerable<MovieDto>>(moviesWithMetaData);
 
-        var shapedData = shaper.ShapeData(moviesDto, movieParameters.Fields);
-        return (shapedData, moviesWithMetaData.MetaData);
+        var links = movieLinks.TryGenerateLinks(moviesDto, linkParameters.MovieParameters.Fields, linkParameters.HttpContext);
+        return (links, moviesWithMetaData.MetaData);
     }
 
     public async Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges)

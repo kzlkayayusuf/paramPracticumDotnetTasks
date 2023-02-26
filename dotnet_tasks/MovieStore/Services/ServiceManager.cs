@@ -9,9 +9,9 @@ public class ServiceManager : IServiceManager
 {
     // lazy loading repositories katmanındaki gibi burada da uygulandı.
     private readonly Lazy<IMovieService> movieService;
-    public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper, IDataShaper<MovieDto> shaper)
+    public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger, IMapper mapper, IMovieLinks movieLinks)
     {
-        this.movieService = new Lazy<IMovieService>(() => new MovieManager(repositoryManager, logger, mapper, shaper));
+        this.movieService = new Lazy<IMovieService>(() => new MovieManager(repositoryManager, logger, mapper, movieLinks));
     }
     public IMovieService MovieService => movieService.Value;
 }

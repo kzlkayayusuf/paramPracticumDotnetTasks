@@ -1,5 +1,6 @@
 using System.Dynamic;
 using Entities.Dtos;
+using Entities.LinkModels;
 using Entities.Models;
 using Entities.RequestFeatures;
 
@@ -7,7 +8,7 @@ namespace Services.Contracts;
 
 public interface IMovieService
 {
-    Task<(IEnumerable<ExpandoObject> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges);
+    Task<(LinkResponse linkResponse, MetaData metaData)> GetAllMoviesAsync(LinkParameters linkParameters, bool trackChanges);
     Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges);
     Task<MovieDto> CreateOneMovieAsync(MovieDtoForInsertion movie);
     Task UpdateOneMovieAsync(int id, MovieDtoForUpdate movieDto, bool trackChanges);
