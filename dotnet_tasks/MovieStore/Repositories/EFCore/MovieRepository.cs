@@ -17,7 +17,7 @@ public sealed class MovieRepository : RepositoryBase<Movie>, IMovieRepository
         var movies = await FindAll(trackChanges)
         .FilterMovies(movieParameters.MinPrice, movieParameters.MaxPrice)
         .Search(movieParameters.SearchTerm)
-        .OrderBy(m => m.Id)
+        .Sort(movieParameters.OrderBy)
         .ToListAsync();
 
         return PagedList<Movie>.ToPagedList(movies, movieParameters.PageNumber, movieParameters.PageSize);

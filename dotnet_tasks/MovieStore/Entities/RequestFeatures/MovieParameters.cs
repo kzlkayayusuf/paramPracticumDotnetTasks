@@ -6,4 +6,9 @@ public class MovieParameters : RequestParameters
     public uint MaxPrice { get; set; } = 1000;
     public bool ValidPriceRange => MaxPrice > MinPrice;
     public String? SearchTerm { get; set; }
+
+    public MovieParameters()
+    {
+        OrderBy = "id";
+    }
 }
