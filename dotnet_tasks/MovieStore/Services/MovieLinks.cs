@@ -37,7 +37,21 @@ public class MovieLinks : IMovieLinks
         }
 
         var movieCollection = new LinkCollectionWrapper<Entity>(shapedMovies);
+        CreateLinkForMovies(httpContext, movieCollection);
         return new LinkResponse { HasLinks = true, LinkedEntities = movieCollection };
+    }
+
+    private LinkCollectionWrapper<Entity> CreateLinkForMovies(HttpContext httpContent,
+        LinkCollectionWrapper<Entity> movieCollectionWrapper)
+    {
+        movieCollectionWrapper.Links.Add(new Link()
+        {
+            Href = $"/api/{httpContent.GetRouteData().Values["controller"].ToString().ToLower()}",
+            Rel = "self",
+            Method = "GET"
+        });
+
+        return movieCollectionWrapper;
     }
 
     private List<Link> CreateLinkForMovie(HttpContext httpContext, MovieDto movieDto, string fields)
