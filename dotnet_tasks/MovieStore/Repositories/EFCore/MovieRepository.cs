@@ -2,6 +2,7 @@ using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
+using Repositories.EFCore.Extensions;
 
 namespace Repositories.EFCore;
 
@@ -15,6 +16,7 @@ public sealed class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
         var movies = await FindAll(trackChanges)
         .FilterMovies(movieParameters.MinPrice, movieParameters.MaxPrice)
+        .Search(movieParameters.SearchTerm)
         .OrderBy(m => m.Id)
         .ToListAsync();
 
