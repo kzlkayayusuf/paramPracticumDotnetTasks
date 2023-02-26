@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Services;
 using Services.Contracts;
 using WebAPI.Extensions;
 
@@ -40,6 +41,7 @@ builder.Services.ConfigureActionFilters();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureDataShaper();
 builder.Services.AddCustomMediaTypes();
+builder.Services.AddScoped<IMovieLinks, MovieLinks>();
 
 var app = builder.Build();
 
