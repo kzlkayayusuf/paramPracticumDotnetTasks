@@ -5,7 +5,7 @@ using Repositories.Contracts;
 
 namespace Repositories.EFCore;
 
-public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
+public sealed class MovieRepository : RepositoryBase<Movie>, IMovieRepository
 {
     public MovieRepository(RepositoryContext context) : base(context)
     {
@@ -13,9 +13,8 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
 
     public async Task<PagedList<Movie>> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
-        var movies = await FindByCondition(m =>
-        ((m.Price >= movieParameters.MinPrice) && (m.Price <= movieParameters.MaxPrice))
-        , trackChanges)
+        var movies = await FindAll(trackChanges)
+        .FilterMovies(movieParameters.MinPrice, movieParameters.MaxPrice)
         .OrderBy(m => m.Id)
         .ToListAsync();
 
