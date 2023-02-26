@@ -1,3 +1,4 @@
+using System.Dynamic;
 using AutoMapper;
 using Entities.Dtos;
 using Entities.Exceptions;
@@ -13,9 +14,11 @@ public class MovieManager : IMovieService
     private readonly IRepositoryManager manager;
     private readonly ILoggerService logger;
     private readonly IMapper mapper;
+    private readonly IDataShaper<MovieDto> shaper;
 
-    public MovieManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper)
+    public MovieManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper, IDataShaper<MovieDto> shaper)
     {
+        this.shaper = shaper;
         this.mapper = mapper;
         this.manager = manager;
         this.logger = logger;
@@ -39,7 +42,7 @@ public class MovieManager : IMovieService
         await manager.SaveAsync();
     }
 
-    public async Task<(IEnumerable<MovieDto> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
+    public async Task<(IEnumerable<ExpandoObject> movies, MetaData metaData)> GetAllMoviesAsync(MovieParameters movieParameters, bool trackChanges)
     {
         if (!movieParameters.ValidPriceRange)
             throw new PriceOutOfRangeBadRequestException();
@@ -47,7 +50,8 @@ public class MovieManager : IMovieService
         var moviesWithMetaData = await manager.Movie.GetAllMoviesAsync(movieParameters, trackChanges);
         var moviesDto = mapper.Map<IEnumerable<MovieDto>>(moviesWithMetaData);
 
-        return (moviesDto, moviesWithMetaData.MetaData);
+        var shapedData = shaper.ShapeData(moviesDto, movieParameters.Fields);
+        return (shapedData, moviesWithMetaData.MetaData);
     }
 
     public async Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges)
