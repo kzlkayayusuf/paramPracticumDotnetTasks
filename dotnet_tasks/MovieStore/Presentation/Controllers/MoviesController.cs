@@ -23,7 +23,7 @@ public class MoviesController : ControllerBase
 
     [HttpHead]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
-    [HttpGet]
+    [HttpGet(Name = "GetAllMovies")]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
         var linkParameters = new LinkParameters()
@@ -48,7 +48,7 @@ public class MoviesController : ControllerBase
     }
 
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-    [HttpPost]
+    [HttpPost(Name = "CreateOneMovie")]
     public async Task<IActionResult> CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
     {
         var movie = await manager.MovieService.CreateOneMovieAsync(movieDto);

@@ -1,3 +1,4 @@
+using Entities.LinkModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
@@ -19,7 +20,29 @@ public class RootController : ControllerBase
     {
         if (mediaType.Contains("application/vnd.param.apiroot"))
         {
+            var list = new List<Link>
+            {
+                new Link()
+                {
+                    Href=linkGenerator.GetUriByName(HttpContext,nameof(GetRoot),new{}),
+                    Rel="self",
+                    Method="GET"
+                },
+                new Link()
+                {
+                    Href=linkGenerator.GetUriByName(HttpContext,nameof(MoviesController.GetAllMovies),new{}),
+                    Rel="movies",
+                    Method="GET"
+                },
+                 new Link()
+                {
+                    Href=linkGenerator.GetUriByName(HttpContext,nameof(MoviesController.CreateOneMovie),new{}),
+                    Rel="movies",
+                    Method="POST"
+                }
+            };
 
+            return Ok(list);
         }
         return NoContent(); //204
     }
