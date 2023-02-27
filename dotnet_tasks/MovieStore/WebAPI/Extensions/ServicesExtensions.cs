@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Presentation.ActionFilters;
+using Presentation.Controllers;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -82,6 +83,12 @@ public static class ServicesExtensions
             opt.AssumeDefaultVersionWhenUnspecified = true;
             opt.DefaultApiVersion = new ApiVersion(1, 0);
             opt.ApiVersionReader = new HeaderApiVersionReader("api-version");
+
+            opt.Conventions.Controller<MoviesController>()
+                .HasApiVersion(new ApiVersion(1, 0));
+
+            opt.Conventions.Controller<MoviesV2Controller>()
+                .HasDeprecatedApiVersion(new ApiVersion(2, 0));
         });
     }
 }
