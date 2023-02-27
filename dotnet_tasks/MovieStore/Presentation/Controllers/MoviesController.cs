@@ -91,4 +91,11 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpOptions]
+    public IActionResult GetMoviesOptions()
+    {
+        Response.Headers.Add("Allow", "GET, PUT, POST, DELETE, PATCH, HEAD, OPTIONS");
+        return Ok();
+    }
 }
