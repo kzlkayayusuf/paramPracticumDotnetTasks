@@ -5,7 +5,7 @@ namespace Presentation.Controllers;
 
 [ApiVersion("2.0")]
 [ApiController]
-[Route("api/{v:apiversion}/movies")]
+[Route("api/movies")]
 public class MoviesV2Controller : ControllerBase
 {
     private readonly IServiceManager manager;
