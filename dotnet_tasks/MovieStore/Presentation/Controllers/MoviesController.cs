@@ -24,6 +24,7 @@ public class MoviesController : ControllerBase
     [HttpHead]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     [HttpGet(Name = "GetAllMovies")]
+    [ResponseCache(Duration = 60)]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
         var linkParameters = new LinkParameters()

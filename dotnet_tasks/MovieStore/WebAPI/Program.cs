@@ -43,6 +43,7 @@ builder.Services.ConfigureDataShaper();
 builder.Services.AddCustomMediaTypes();
 builder.Services.AddScoped<IMovieLinks, MovieLinks>();
 builder.Services.ConfigureVersioning();
+builder.Services.ConfigureResponseCaching();
 
 var app = builder.Build();
 
@@ -59,7 +60,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// cors dan sonra caching in çağrılması önerilir!
+
 app.UseCors("CorsPolicy");
+
+app.UseResponseCaching();
 
 app.UseAuthorization();
 

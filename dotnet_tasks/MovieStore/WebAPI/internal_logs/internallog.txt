@@ -190,3 +190,8 @@
 2023-02-27 15:51:15.5523 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=D:\anadolununYildizlariParamNetPracticum\paramPracticumDotnetTasks\paramPracticumDotnetTasks\dotnet_tasks\MovieStore\WebAPI\nlog.config
 2023-02-27 15:52:39.4450 Info AppDomain Shutting down. LogFactory closing...
 2023-02-27 15:52:39.4635 Info LogFactory has been closed.
+2023-02-27 17:55:36.4438 Info Message Template Auto Format enabled
+2023-02-27 17:55:36.5752 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2023-02-27 17:55:36.6030 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=D:\anadolununYildizlariParamNetPracticum\paramPracticumDotnetTasks\paramPracticumDotnetTasks\dotnet_tasks\MovieStore\WebAPI\nlog.config
+2023-02-27 18:00:00.2105 Info AppDomain Shutting down. LogFactory closing...
+2023-02-27 18:00:00.2318 Info LogFactory has been closed.
