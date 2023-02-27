@@ -31,4 +31,9 @@ public sealed class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     public void UpdateOneMovie(Movie movie) => Update(movie);
 
     public void DeleteOneMovie(Movie movie) => Delete(movie);
+
+    public async Task<List<Movie>> GetAllMoviesAsync(bool trackChanges)
+    {
+        return await FindAll(trackChanges).OrderBy(m => m.Id).ToListAsync();
+    }
 }

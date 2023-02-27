@@ -15,4 +15,5 @@ public interface IMovieService
     Task DeleteOneMovieAsync(int id, bool trackChanges);
     Task<(MovieDtoForUpdate movieDtoForUpdate, Movie movie)> GetOneMovieForPatchAsync(int id, bool trackChanges);
     Task SaveChangesForPatchAsync(MovieDtoForUpdate movieDtoForUpdate, Movie movie);
+    Task<List<Movie>> GetAllMoviesAsync(bool trackChanges);
 }

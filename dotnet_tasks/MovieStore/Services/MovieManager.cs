@@ -55,6 +55,12 @@ public class MovieManager : IMovieService
         return (links, moviesWithMetaData.MetaData);
     }
 
+    public async Task<List<Movie>> GetAllMoviesAsync(bool trackChanges)
+    {
+        var movies = await manager.Movie.GetAllMoviesAsync(trackChanges);
+        return movies;
+    }
+
     public async Task<MovieDto> GetOneMovieByIdAsync(int id, bool trackChanges)
     {
         var movie = await GetOneMovieByIdAndCheckExists(id, trackChanges);

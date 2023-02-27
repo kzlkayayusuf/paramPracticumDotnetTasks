@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Entities.Dtos;
-using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Services.Contracts;
 
 namespace Presentation.Controllers;
 
+[ApiVersion("1.0")]
 [ServiceFilter(typeof(LogFilterAttribute))]
 [ApiController]
 [Route("api/[controller]")]
