@@ -11,7 +11,7 @@ namespace Presentation.Controllers;
 [ApiVersion("1.0")]
 [ServiceFilter(typeof(LogFilterAttribute))]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/{v:apiversion}/movies")]
 public class MoviesController : ControllerBase
 {
     private readonly IServiceManager manager;

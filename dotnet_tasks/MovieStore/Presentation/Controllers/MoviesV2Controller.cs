@@ -5,7 +5,7 @@ namespace Presentation.Controllers;
 
 [ApiVersion("2.0")]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/{v:apiversion}/movies")]
 public class MoviesV2Controller : ControllerBase
 {
     private readonly IServiceManager manager;
@@ -18,6 +18,11 @@ public class MoviesV2Controller : ControllerBase
     public async Task<IActionResult> GetAllMoviesAsync()
     {
         var movies = await manager.MovieService.GetAllMoviesAsync(false);
-        return Ok(movies);
+        var moviesV2 = movies.Select(m => new
+        {
+            Name = m.Name,
+            Id = m.Id
+        });
+        return Ok(moviesV2);
     }
 }
