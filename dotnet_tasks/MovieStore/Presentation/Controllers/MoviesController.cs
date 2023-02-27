@@ -12,6 +12,7 @@ namespace Presentation.Controllers;
 [ServiceFilter(typeof(LogFilterAttribute))]
 [ApiController]
 [Route("api/movies")]
+[ResponseCache(CacheProfileName = "5mins")]
 public class MoviesController : ControllerBase
 {
     private readonly IServiceManager manager;
