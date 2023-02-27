@@ -58,12 +58,18 @@ public static class ServicesExtensions
             if (systemTextJsonOutputFormatter is not null)
             {
                 systemTextJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.param.hateoas+json");
+
+                systemTextJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.param.apiroot+json");
             }
 
             var xmlOutputFormatter = config.OutputFormatters.OfType<XmlDataContractSerializerOutputFormatter>()?.FirstOrDefault();
 
             if (xmlOutputFormatter is not null)
+            {
                 xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.param.hateoas+xml");
+
+                xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.param.apiroot+xml");
+            }
         });
     }
 }
