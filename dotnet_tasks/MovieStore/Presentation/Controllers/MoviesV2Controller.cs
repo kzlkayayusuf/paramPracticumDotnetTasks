@@ -3,7 +3,7 @@ using Services.Contracts;
 
 namespace Presentation.Controllers;
 
-[ApiVersion("2.0")]
+[ApiVersion("2.0", Deprecated = true)]
 [ApiController]
 [Route("api/movies")]
 public class MoviesV2Controller : ControllerBase
