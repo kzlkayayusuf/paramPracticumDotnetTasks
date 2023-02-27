@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Entities.Dtos;
 using Entities.RequestFeatures;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
@@ -12,7 +13,8 @@ namespace Presentation.Controllers;
 [ServiceFilter(typeof(LogFilterAttribute))]
 [ApiController]
 [Route("api/movies")]
-[ResponseCache(CacheProfileName = "5mins")]
+//[ResponseCache(CacheProfileName = "5mins")]
+//[HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 80)]
 public class MoviesController : ControllerBase
 {
     private readonly IServiceManager manager;
@@ -25,7 +27,7 @@ public class MoviesController : ControllerBase
     [HttpHead]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     [HttpGet(Name = "GetAllMovies")]
-    [ResponseCache(Duration = 60)]
+    //[ResponseCache(Duration = 60)]
     public async Task<IActionResult> GetAllMovies([FromQuery] MovieParameters movieParameters)
     {
         var linkParameters = new LinkParameters()
