@@ -121,7 +121,7 @@ public static class ServicesExtensions
             new RateLimitRule()
             {
                 Endpoint="*",
-                Limit=3,
+                Limit=15,
                 Period="1m"
             }
         };

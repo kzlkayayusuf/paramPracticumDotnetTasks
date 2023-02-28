@@ -45,6 +45,7 @@ public class MoviesController : ControllerBase
         return result.linkResponse.HasLinks ? Ok(result.linkResponse.LinkedEntities) : Ok(result.linkResponse.ShapedEntities);
     }
 
+    [Authorize]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetOneMovie([FromRoute(Name = "id")] int id)
     {
@@ -53,6 +54,7 @@ public class MoviesController : ControllerBase
         return Ok(movie);
     }
 
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     [HttpPost(Name = "CreateOneMovie")]
     public async Task<IActionResult> CreateOneMovie([FromBody] MovieDtoForInsertion movieDto)
@@ -62,6 +64,7 @@ public class MoviesController : ControllerBase
         return StatusCode(201, movie);
     }
 
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateMovie([FromRoute(Name = "id")] int id, [FromBody] MovieDtoForUpdate movieDto)
@@ -71,6 +74,7 @@ public class MoviesController : ControllerBase
         return NoContent(); //204
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteOneMovie([FromRoute(Name = "id")] int id)
     {
@@ -79,9 +83,10 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> PartiallyUpdateOneMovie([FromRoute(Name = "id")] int id,
-            [FromBody] JsonPatchDocument<MovieDtoForUpdate> moviePatch)
+                [FromBody] JsonPatchDocument<MovieDtoForUpdate> moviePatch)
     {
         if (moviePatch is null)
             return BadRequest(); //400
@@ -99,6 +104,7 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpOptions]
     public IActionResult GetMoviesOptions()
     {
