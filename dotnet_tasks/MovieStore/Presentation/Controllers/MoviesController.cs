@@ -2,6 +2,7 @@ using System.Text.Json;
 using Entities.Dtos;
 using Entities.RequestFeatures;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
@@ -24,6 +25,7 @@ public class MoviesController : ControllerBase
         this.manager = manager;
     }
 
+    [Authorize]
     [HttpHead]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     [HttpGet(Name = "GetAllMovies")]
