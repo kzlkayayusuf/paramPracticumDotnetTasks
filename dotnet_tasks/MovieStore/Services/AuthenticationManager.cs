@@ -14,6 +14,8 @@ public class AuthenticationManager : IAuthenticationService
     private readonly UserManager<User> userManager;
     private readonly IConfiguration configuration;
 
+    private User? user;
+
     public AuthenticationManager(ILoggerService logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
     {
         this.logger = logger;
@@ -29,6 +31,18 @@ public class AuthenticationManager : IAuthenticationService
 
         if (result.Succeeded)
             await userManager.AddToRolesAsync(user, userForRegistrationDto.Roles);
+
+        return result;
+    }
+
+    public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuthDto)
+    {
+        this.user = await userManager.FindByNameAsync(userForAuthDto.Username);
+        var result = (this.user is not null && await userManager.CheckPasswordAsync(this.user, userForAuthDto.Password));
+        if (!result)
+        {
+            logger.LogWarning($"{nameof(ValidateUser)} : Authentication failed! Wrong username or password");
+        }
 
         return result;
     }
