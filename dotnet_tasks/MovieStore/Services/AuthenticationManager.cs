@@ -23,6 +23,13 @@ public class AuthenticationManager : IAuthenticationService
     }
     public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
     {
-        throw new NotImplementedException();
+        var user = mapper.Map<User>(userForRegistrationDto);
+
+        var result = await userManager.CreateAsync(user, userForRegistrationDto.Password);
+
+        if (result.Succeeded)
+            await userManager.AddToRolesAsync(user, userForRegistrationDto.Roles);
+
+        return result;
     }
 }
