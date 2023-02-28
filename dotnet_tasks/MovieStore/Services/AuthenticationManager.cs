@@ -1,8 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using AutoMapper;
 using Entities.Dtos;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Services.Contracts;
 
 namespace Services;
@@ -23,6 +27,7 @@ public class AuthenticationManager : IAuthenticationService
         this.userManager = userManager;
         this.configuration = configuration;
     }
+
     public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
     {
         var user = mapper.Map<User>(userForRegistrationDto);
@@ -45,5 +50,51 @@ public class AuthenticationManager : IAuthenticationService
         }
 
         return result;
+    }
+
+    public async Task<string> CreateToken()
+    {
+        var signinCredentials = GetSigninCredentials();
+        var claims = await GetClaims();
+        var tokenOptions = GenerateTokenOptions(signinCredentials, claims);
+        return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+    }
+
+    private JwtSecurityToken GenerateTokenOptions(SigningCredentials signinCredentials, List<Claim> claims)
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+
+        return new JwtSecurityToken(
+            issuer: jwtSettings["validIssuer"],
+            audience: jwtSettings["validAudience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+            signingCredentials: signinCredentials
+        );
+    }
+
+    private async Task<List<Claim>> GetClaims()
+    {
+        var claims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name,this.user.UserName)
+        };
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        return claims;
+    }
+
+    private SigningCredentials GetSigninCredentials()
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var key = Encoding.UTF8.GetBytes(jwtSettings["secretKey"]);
+        var secret = new SymmetricSecurityKey(key);
+        return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }
 }
