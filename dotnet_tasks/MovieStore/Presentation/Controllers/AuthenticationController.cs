@@ -41,9 +41,17 @@ public class AuthenticationController : ControllerBase
         if (!await manager.AuthenticationService.ValidateUser(userForAuthDto))
             return Unauthorized(); //401
 
-        return Ok(new
-        {
-            Token = await manager.AuthenticationService.CreateToken()
-        });
+        var tokenDto = await manager.AuthenticationService.CreateToken(true);
+
+        return Ok(tokenDto);
+    }
+
+    [HttpPost("refresh")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
+    {
+        var tokenDtoForReturn = await manager.AuthenticationService.RefreshToken(tokenDto);
+
+        return Ok(tokenDtoForReturn);
     }
 }
