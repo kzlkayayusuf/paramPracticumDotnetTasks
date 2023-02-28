@@ -11,5 +11,6 @@ public class MappingProfile : Profile
         CreateMap<MovieDtoForUpdate, Movie>().ReverseMap();
         CreateMap<Movie, MovieDto>();
         CreateMap<MovieDtoForInsertion, Movie>();
+        CreateMap<UserForRegistrationDto, User>();
     }
 }
