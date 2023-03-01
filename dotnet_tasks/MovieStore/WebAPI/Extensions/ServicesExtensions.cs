@@ -183,7 +183,20 @@ public static class ServicesExtensions
     {
         services.AddSwaggerGen(s =>
         {
-            s.SwaggerDoc("v1", new OpenApiInfo { Title = "Patika Dev", Version = "v1" });
+            s.SwaggerDoc("v1",
+             new OpenApiInfo
+             {
+                 Title = "Patika Dev",
+                 Version = "v1",
+                 Description = "Param ASP.NET Core Web API",
+                 TermsOfService = new Uri("https://www.patika.dev/tr"),
+                 Contact = new OpenApiContact
+                 {
+                     Name = "Yusuf KIZILKAYA",
+                     Email = "kzlkayayusuf025@gmail.com",
+                     Url = new Uri("https://github.com/kzlkayayusuf")
+                 }
+             });
             s.SwaggerDoc("v2", new OpenApiInfo { Title = "Patika Dev", Version = "v2" });
 
             s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
