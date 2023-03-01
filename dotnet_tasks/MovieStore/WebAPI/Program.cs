@@ -30,7 +30,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// coded swagger extension method
+builder.Services.ConfigureSwagger();
 
 // dependency injection
 // extension method ile dbContext
@@ -65,7 +67,11 @@ app.ConfigureExceptionHandler(logger);
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(s =>
+    {
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "Patika Dev v1");
+        s.SwaggerEndpoint("/swagger/v2/swagger.json", "Patika Dev v2");
+    });
 }
 
 app.UseHttpsRedirection();
